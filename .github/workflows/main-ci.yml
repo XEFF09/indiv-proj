@@ -20,6 +20,7 @@ jobs:
       version_type: ${{ github.event.inputs.version_type || 'patch' }}
 
   docker-build:
+    needs: generate_tag
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
