@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${APP_NAME}-pg-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${APP_NAME}-pg
+  template:
+    metadata:
+      name: ${APP_NAME}-pg-pods
+      labels:
+        app: ${APP_NAME}-pg
+    spec:
+      containers:
+        - name: ${APP_NAME}-pg
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: app-config
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgresdata
+      volumes:
+        - name: postgresdata
+          persistentVolumeClaim:
+            claimName: ${APP_NAME}-pg-volume-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${APP_NAME}-pg-cluster
+spec:
+  type: ClusterIP
+  selector:
+    app: ${APP_NAME}-pg
+  ports:
+    - port: ${DB_PORT}
+      targetPort: 5432

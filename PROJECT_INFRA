@@ -1,0 +1,19 @@
+infra
+├── docker
+│   ├── dev.Dockerfile
+│   └── prod.Dockerfile
+└── k8s
+    ├── config.env
+    ├── config.env.example
+    ├── gofiber
+    │   └── base
+    │       ├── deployment.yml
+    │       └── kustomization.yml
+    ├── kustomization.yml
+    └── postgres
+        └── base
+            ├── deployment.yml
+            ├── kustomization.yml
+            └── volume.yml
+
+7 directories, 10 files

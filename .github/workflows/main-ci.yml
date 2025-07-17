@@ -1,0 +1,45 @@
+name: "Main CI"
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: "Version bump type (patch, minor, major)"
+        required: false
+        default: "patch"
+
+permissions:
+  contents: write
+  id-token: write
+
+env:
+  GO_VERSION: 1.24
+  APP_NAME: "decauth-be"
+  APP_DB_PORT: 5678
+
+jobs:
+  generate_tag:
+    uses: xeff09/infra-template/github-actions/generate-tag.yml@main
+    with:
+      version_type: ${{ github.event.inputs.version_type || 'patch' }}
+
+  docker_build:
+    needs: generate_tag
+    uses: xeff09/infra-template/github-actions/docker-build.yml@main
+    with:
+      app_name: ${{ env.APP_NAME }}
+      new_tag: ${{ needs.generate_tag.outputs.new_tag }}
+
+  docker_push:
+    needs: docker_build
+    uses: xeff09/infra-template/github-actions/docker-push.yml@main
+    with:
+      app_name: ${{ env.APP_NAME }}
+      new_tag: ${{ needs.generate_tag.outputs.new_tag }}
+
+  release:
+    needs: docker_push
+    uses: xeff09/infra-template/github-actions/release.yml@main
+    with:
+      new_tag: ${{ needs.generate_tag.outputs.new_tag }}

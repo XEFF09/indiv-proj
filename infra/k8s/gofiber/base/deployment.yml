@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${APP_NAME}-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ${APP_NAME}-be
+  template:
+    metadata:
+      name: ${APP_NAME}-be-pods
+      labels:
+        app: ${APP_NAME}-be
+    spec:
+      initContainers:
+        - name: wait-for-db
+          image: busybox:latest
+          command:
+            [
+              "sh",
+              "-c",
+              "until nc -z $DB_HOST $DB_PORT; do echo waiting for db; sleep 2; done;",
+            ]
+          envFrom:
+            - configMapRef:
+                name: env
+      containers:
+        - name: ${APP_NAME}-be
+          image: xeff09/${APP_NAME}-be:latest
+          envFrom:
+            - configMapRef:
+                name: app-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${APP_NAME}-be-cluster
+spec:
+  type: ClusterIP
+  selector:
+    app: ${APP_NAME}-be
+  ports:
+    - port: 9090
+      targetPort: 9090
