@@ -8,6 +8,7 @@ on:
         description: "Version bump type (patch, minor, major)"
         required: false
         default: "patch"
+
 permissions:
   contents: write
   id-token: write
