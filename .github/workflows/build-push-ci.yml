@@ -1,4 +1,5 @@
-name: Docker Push
+name: Docker Build & Push
+
 on:
   workflow_call:
     inputs:
@@ -17,6 +18,10 @@ on:
 jobs:
   docker-push:
     runs-on: ubuntu-latest
+    env:
+      IMAGE_VERSION: ${{ secrets.docker_username }}/${{ inputs.app_name }}:${{ inputs.new_tag }}
+      IMAGE_LATEST: ${{ secrets.docker_username }}/${{ inputs.app_name }}:latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,16 +32,11 @@ jobs:
           username: ${{ secrets.docker_username }}
           password: ${{ secrets.docker_password }}
 
-      - name: Prepare Tagged Image
-        run: |
-          IMAGE_VERSION="${{ secrets.docker_username }}/${{ inputs.app_name }}:${{ inputs.new_tag }}"
-          IMAGE_LATEST="${{ secrets.docker_username }}/${{ inputs.app_name }}:latest"
-
       - name: Docker Build
         run: |
-          docker build -f infra/docker/prod.Dockerfile -t "${IMAGE_VERSION}" -t "${IMAGE_LATEST}" .
+          docker build -f infra/docker/prod.Dockerfile -t "$IMAGE_VERSION" -t "$IMAGE_LATEST" .
 
       - name: Push Docker Image
         run: |
-          docker push "${IMAGE_VERSION}"
-          docker push "${IMAGE_LATEST}"
+          docker push "$IMAGE_VERSION"
+          docker push "$IMAGE_LATEST"
