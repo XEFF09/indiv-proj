@@ -21,7 +21,6 @@ jobs:
 
   docker_build_push:
     needs:
-      - docker_build
       - generate_tag
     uses: ./.github/workflows/build-push-ci.yml
     with:
