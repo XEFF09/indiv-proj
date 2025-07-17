@@ -16,7 +16,7 @@ on:
         required: true
 
 jobs:
-  docker-push:
+  docker-build-push:
     runs-on: ubuntu-latest
     env:
       IMAGE_VERSION: ${{ secrets.docker_username }}/${{ inputs.app_name }}:${{ inputs.new_tag }}
