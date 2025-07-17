@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Docker Build
         run: |
-          IMAGE="${{ secrets.DOCKER_USERNAME }}/${{ inputs.app_name }}:${{ inputs.new_tag }}"
+          IMAGE="${{ secrets.DOCKER_USERNAME }}/${{ inputs.app_name }}:${{ needs.generate_tag.outputs.new_tag }}"
           docker build -f infra/docker/prod.Dockerfile -t "$IMAGE" .
 
   docker_push:
