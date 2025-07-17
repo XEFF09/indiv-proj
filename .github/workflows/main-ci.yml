@@ -20,26 +20,26 @@ env:
 
 jobs:
   generate_tag:
-    uses: xeff09/infra-template/github-actions/generate-tag.yml@main
+    uses: xeff09/infra-template/.github/workflows/generate-tag.yml@main
     with:
       version_type: ${{ github.event.inputs.version_type || 'patch' }}
 
   docker_build:
     needs: generate_tag
-    uses: xeff09/infra-template/github-actions/docker-build.yml@main
+    uses: xeff09/infra-template/.github/workflows/docker-build.yml@main
     with:
       app_name: ${{ env.APP_NAME }}
       new_tag: ${{ needs.generate_tag.outputs.new_tag }}
 
   docker_push:
     needs: docker_build
-    uses: xeff09/infra-template/github-actions/docker-push.yml@main
+    uses: xeff09/infra-template/.github/workflows/docker-push.yml@main
     with:
       app_name: ${{ env.APP_NAME }}
       new_tag: ${{ needs.generate_tag.outputs.new_tag }}
 
   release:
     needs: docker_push
-    uses: xeff09/infra-template/github-actions/release.yml@main
+    uses: xeff09/infra-template/.github/workflows/release.yml@main
     with:
       new_tag: ${{ needs.generate_tag.outputs.new_tag }}
