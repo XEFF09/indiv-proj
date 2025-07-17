@@ -4,6 +4,7 @@ import (
 	"github.com/XEFF09/decauth-be/setup"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
