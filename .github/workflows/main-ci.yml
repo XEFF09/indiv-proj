@@ -35,4 +35,5 @@ jobs:
     uses: xeff09/infra-template/.github/workflows/release.yml@main
     with:
       new_tag: ${{ needs.generate_tag.outputs.new_tag }}
+    secrets:
       gh_token: ${{ secrets.GH_PAT }}
