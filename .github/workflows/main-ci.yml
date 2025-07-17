@@ -23,7 +23,7 @@ jobs:
     needs: generate_tag
     uses: ./.github/workflows/build-ci.yml
     with:
-      app_name: "indiv-image"
+      app_name: "indiv"
       new_tag: ${{ needs.generate_tag.outputs.new_tag }}
     secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
@@ -32,7 +32,7 @@ jobs:
     needs: docker_build
     uses: xeff09/infra-template/.github/workflows/docker-push.yml@main
     with:
-      app_name: "indiv-image"
+      app_name: "indiv"
       new_tag: ${{ needs.generate_tag.outputs.new_tag }}
     secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
