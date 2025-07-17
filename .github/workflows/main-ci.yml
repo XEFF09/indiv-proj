@@ -29,7 +29,9 @@ jobs:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
 
   docker_push:
-    needs: docker_build
+    needs:
+      - docker_build
+      - generate_tag
     uses: xeff09/infra-template/.github/workflows/docker-push.yml@main
     with:
       app_name: "indiv"
