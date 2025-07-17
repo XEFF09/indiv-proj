@@ -23,14 +23,14 @@ jobs:
     needs: generate_tag
     uses: xeff09/infra-template/.github/workflows/gofiber-build.yml@main
     with:
-      app_name: "decauth"
+      app_name: "indiv"
       new_tag: ${{ needs.generate_tag.outputs.new_tag }}
 
   docker_push:
     needs: docker_build
     uses: xeff09/infra-template/.github/workflows/docker-push.yml@main
     with:
-      app_name: "decauth"
+      app_name: "indiv"
       new_tag: ${{ needs.generate_tag.outputs.new_tag }}
 
   release:
