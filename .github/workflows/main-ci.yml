@@ -19,6 +19,14 @@ jobs:
     with:
       version_type: ${{ github.event.inputs.version_type || 'patch' }}
 
+  pre_docker_build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log secret length
+        run: |
+          echo -n "${{ secrets.DOCKER_USERNAME }}" | wc -c
+
   docker_build:
     needs: generate_tag
     uses: xeff09/infra-template/.github/workflows/gofiber-build.yml@main
