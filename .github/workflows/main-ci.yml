@@ -25,6 +25,7 @@ jobs:
     with:
       app_name: "indiv-image"
       new_tag: ${{ needs.generate_tag.outputs.new_tag }}
+    secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
 
   docker_push:
@@ -33,8 +34,8 @@ jobs:
     with:
       app_name: "indiv-image"
       new_tag: ${{ needs.generate_tag.outputs.new_tag }}
-      docker_username: ${{ secrets.DOCKER_USERNAME }}
     secrets:
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
 
   release:
