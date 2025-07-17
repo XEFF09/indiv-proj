@@ -30,16 +30,18 @@ migrate:
 # k8s
 
 kube-env-a:
-	@ kubectl kustomize ./infra/k8s/.
-	@ kubectl apply -k ./infra/k8s/.
+	@ kubectl kustomize ./infra/.
+	@ kubectl apply -k ./infra/.
 
 kube-dep-a:
 	@ kubectl apply -k ./infra/k8s/gofiber/base/.
 	@ kubectl apply -k ./infra/k8s/postgres/base/.
 
+.PHONY: kube-vol-d
+
 kube-vol-d:
-	@ kubectl delete pvc -l owner-namespace=decauth-volumes
-	@ kubectl delete pv -l owner-namespace=decauth-volumes
+	@kubectl delete pvc -l owner-namespace=$(ns)-volumes
+	@kubectl delete pv -l owner-namespace=$(ns)-volumes
 
 kup: kube-env-a kube-dep-a
 

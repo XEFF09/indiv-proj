@@ -5,7 +5,7 @@ metadata:
   labels:
     type: local
     app: ${APP_NAME}-pg
-    owner-namespace: $\{APP_NAME}-volumes
+    owner-namespace: ${APP_NAME}-volumes
 spec:
   storageClassName: manual
   capacity:
