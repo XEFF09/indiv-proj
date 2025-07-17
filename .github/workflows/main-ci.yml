@@ -28,7 +28,7 @@ jobs:
     secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
 
-  docker_push:
+  docker_build_push:
     needs:
       - docker_build
       - generate_tag

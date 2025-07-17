@@ -27,11 +27,13 @@ jobs:
           username: ${{ secrets.docker_username }}
           password: ${{ secrets.docker_password }}
 
-      - name: Docker Build
+      - name: Prepare Tagged Image
         run: |
           IMAGE_VERSION="${{ secrets.docker_username }}/${{ inputs.app_name }}:${{ inputs.new_tag }}"
           IMAGE_LATEST="${{ secrets.docker_username }}/${{ inputs.app_name }}:latest"
 
+      - name: Docker Build
+        run: |
           docker build -f infra/docker/prod.Dockerfile -t "${IMAGE_VERSION}" -t "${IMAGE_LATEST}" .
 
       - name: Push Docker Image
