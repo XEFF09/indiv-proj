@@ -23,15 +23,20 @@ jobs:
     needs: generate_tag
     uses: xeff09/infra-template/.github/workflows/gofiber-build.yml@main
     with:
-      app_name: "indiv"
+      app_name: "indiv-image"
       new_tag: ${{ needs.generate_tag.outputs.new_tag }}
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
 
   docker_push:
     needs: docker_build
     uses: xeff09/infra-template/.github/workflows/docker-push.yml@main
     with:
-      app_name: "indiv"
+      app_name: "indiv-image"
       new_tag: ${{ needs.generate_tag.outputs.new_tag }}
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
   release:
     needs: docker_push
