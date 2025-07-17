@@ -15,5 +15,3 @@ infra
             ├── deployment.yml
             ├── kustomization.yml
             └── volume.yml
-
-7 directories, 10 files
