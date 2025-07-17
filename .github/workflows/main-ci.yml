@@ -32,7 +32,7 @@ jobs:
     needs:
       - docker_build
       - generate_tag
-    uses: xeff09/infra-template/.github/workflows/docker-push.yml@main
+    uses: ./.github/workflows/push-ci.yml
     with:
       app_name: "indiv"
       new_tag: ${{ needs.generate_tag.outputs.new_tag }}

@@ -1,0 +1,32 @@
+name: Docker Push
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        required: true
+        type: string
+      new_tag:
+        required: true
+        type: string
+    secrets:
+      docker_username:
+        required: true
+      docker_password:
+        required: true
+
+jobs:
+  docker-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.docker_username }}
+          password: ${{ secrets.docker_password }}
+
+      - name: Push Docker Image
+        run: |
+          IMAGE="${{ secrets.docker_username }}/${{ inputs.app_name }}"
+          docker push "${IMAGE}:${{ inputs.new_tag }}"
+          docker tag "${IMAGE}:${{ inputs.new_tag }}" "${IMAGE}:latest"
+          docker push "${IMAGE}:latest"
