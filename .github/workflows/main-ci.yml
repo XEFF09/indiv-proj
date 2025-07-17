@@ -31,7 +31,9 @@ jobs:
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
 
   release:
-    needs: docker_build_push
+    needs:
+      - docker_build_push
+      - generate_tag
     uses: xeff09/infra-template/.github/workflows/release.yml@main
     with:
       new_tag: ${{ needs.generate_tag.outputs.new_tag }}
