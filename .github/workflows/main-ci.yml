@@ -21,7 +21,7 @@ jobs:
 
   docker_build:
     needs: generate_tag
-    uses: xeff09/infra-template/.github/workflows/docker-build.yml@main
+    uses: xeff09/infra-template/.github/workflows/gofiber-build.yml@main
     with:
       app_name: "decauth"
       new_tag: ${{ needs.generate_tag.outputs.new_tag }}
