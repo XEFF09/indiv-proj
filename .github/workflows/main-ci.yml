@@ -19,15 +19,6 @@ jobs:
     with:
       version_type: ${{ github.event.inputs.version_type || 'patch' }}
 
-  docker_build:
-    needs: generate_tag
-    uses: ./.github/workflows/build-ci.yml
-    with:
-      app_name: "indiv"
-      new_tag: ${{ needs.generate_tag.outputs.new_tag }}
-    secrets:
-      docker_username: ${{ secrets.DOCKER_USERNAME }}
-
   docker_build_push:
     needs:
       - docker_build
@@ -41,7 +32,7 @@ jobs:
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
 
   release:
-    needs: docker_push
+    needs: docker_build_push
     uses: xeff09/infra-template/.github/workflows/release.yml@main
     with:
       new_tag: ${{ needs.generate_tag.outputs.new_tag }}
