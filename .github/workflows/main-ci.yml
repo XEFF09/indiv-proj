@@ -19,14 +19,15 @@ jobs:
     with:
       version_type: ${{ github.event.inputs.version_type || 'patch' }}
 
-  docker_build:
-    needs: generate_tag
-    uses: xeff09/infra-template/.github/workflows/gofiber-build.yml@main
-    with:
-      app_name: "indiv-image"
-      new_tag: ${{ needs.generate_tag.outputs.new_tag }}
-    secrets:
-      docker_username: ${{ secrets.DOCKER_USERNAME }}
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Docker Build
+        run: |
+          IMAGE="${{ secrets.DOCKER_USERNAME }}/${{ inputs.app_name }}:${{ inputs.new_tag }}"
+          docker build -f infra/docker/prod.Dockerfile -t "$IMAGE" .
 
   docker_push:
     needs: docker_build
