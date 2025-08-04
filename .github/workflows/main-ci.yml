@@ -1,0 +1,41 @@
+name: "Main CI"
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: "Version bump type (patch, minor, major)"
+        required: false
+        default: "patch"
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  generate_tag:
+    uses: xeff09/infra-template/.github/workflows/generate-tag.yml@main
+    with:
+      version_type: ${{ github.event.inputs.version_type || 'patch' }}
+
+  docker_build_push:
+    needs:
+      - generate_tag
+    uses: ./.github/workflows/build-push-ci.yml
+    with:
+      app_name: "indiv"
+      new_tag: ${{ needs.generate_tag.outputs.new_tag }}
+    secrets:
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}
+
+  release:
+    needs:
+      - docker_build_push
+      - generate_tag
+    uses: xeff09/infra-template/.github/workflows/release.yml@main
+    with:
+      new_tag: ${{ needs.generate_tag.outputs.new_tag }}
+    secrets:
+      gh_token: ${{ secrets.GH_PAT }}

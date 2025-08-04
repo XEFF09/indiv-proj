@@ -1,0 +1,123 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - "../../base/postgres/"
+
+namespace: database-space
+
+configMapGenerator:
+  - name: db-config
+    envs:
+      - .env
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+replacements:
+  # DB_DISTRO
+  - source:
+      kind: ConfigMap
+      name: db-config
+      fieldPath: data.DB_DISTRO
+    targets:
+      - select:
+          kind: Deployment
+          namespace: database-space
+        fieldPaths:
+          - metadata.labels.app
+          - spec.selector.matchLabels.app
+          - spec.template.metadata.labels.app
+          - spec.template.spec.containers.[name=DB_DISTRO_PLACEHOLDER].name
+      - select:
+          kind: Service
+          namespace: database-space
+        fieldPaths:
+          - metadata.labels.app
+          - spec.selector.app
+      - select:
+          kind: PersistentVolume
+        fieldPaths:
+          - metadata.labels.app
+
+  # DATABASE_DEPLOYMENT
+  - source:
+      kind: ConfigMap
+      name: db-config
+      fieldPath: data.DATABASE_DEPLOYMENT
+    targets:
+      - select:
+          kind: Deployment
+          namespace: database-space
+        fieldPaths:
+          - metadata.name
+
+  # DATABASE_PODS
+  - source:
+      kind: ConfigMap
+      name: db-config
+      fieldPath: data.DATABASE_PODS
+    targets:
+      - select:
+          kind: Deployment
+          namespace: database-space
+        fieldPaths:
+          - spec.template.metadata.name
+
+  # DATABASE_CLUSTER
+  - source:
+      kind: ConfigMap
+      name: db-config
+      fieldPath: data.DATABASE_CLUSTER
+    targets:
+      - select:
+          kind: Service
+          namespace: database-space
+        fieldPaths:
+          - metadata.name
+
+  # DATABASE_PVC
+  - source:
+      kind: ConfigMap
+      name: db-config
+      fieldPath: data.DATABASE_PVC
+    targets:
+      - select:
+          kind: Deployment
+          namespace: database-space
+        fieldPaths:
+          - spec.template.spec.volumes.[name=postgresdata].persistentVolumeClaim.claimName
+      - select:
+          kind: PersistentVolumeClaim
+          namespace: database-space
+        fieldPaths:
+          - metadata.name
+
+  # DATABASE_VOLS_NS
+  - source:
+      kind: ConfigMap
+      name: db-config
+      fieldPath: data.DATABASE_VOLS_NS
+    targets:
+      - select:
+          kind: PersistentVolume
+        fieldPaths:
+          - metadata.labels.app
+          - metadata.labels.owner-namespace
+      - select:
+          kind: PersistentVolumeClaim
+          namespace: database-space
+        fieldPaths:
+          - metadata.labels.app
+          - metadata.labels.owner-namespace
+
+  # DATABASE_PV
+  - source:
+      kind: ConfigMap
+      name: db-config
+      fieldPath: data.DATABASE_PV
+    targets:
+      - select:
+          kind: PersistentVolume
+        fieldPaths:
+          - metadata.name

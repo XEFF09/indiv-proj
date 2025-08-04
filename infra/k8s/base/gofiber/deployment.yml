@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: BACKEND_DEPLOYMENT_PLACEHOLDER
+  namespace: backend-space
+  labels:
+    app: APP_NAME_PLACEHOLDER
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: APP_NAME_PLACEHOLDER
+  template:
+    metadata:
+      name: BACKEND_PODS_PLACEHOLDER
+      labels:
+        app: APP_NAME_PLACEHOLDER
+    spec:
+      initContainers:
+        - name: wait-for-db
+          image: busybox:latest
+          command:
+            - sh
+            - -c
+            - |
+              echo "Checking DB connectivity to $DB_HOST:$DB_PORT";
+              until nc -z "$DB_HOST" "$DB_PORT"; do
+                echo "waiting for db";
+                sleep 2;
+              done;
+              echo "DB is ready";
+          envFrom:
+            - configMapRef:
+                name: be-config
+      containers:
+        - name: APP_NAME_PLACEHOLDER
+          image: BACKEND_IMAGE_PLACEHOLDER
+          envFrom:
+            - configMapRef:
+                name: be-config
+          volumeMounts:
+            - name: env-vol
+              mountPath: /app/.env
+              subPath: .env
+      volumes:
+        - name: env-vol
+          configMap:
+            name: be-env-file
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: BACKEND_CLUSTER_PLACEHOLDER
+  namespace: backend-space
+  labels:
+    app: APP_NAME_PLACEHOLDER
+spec:
+  type: ClusterIP
+  selector:
+    app: APP_NAME_PLACEHOLDER
+  ports:
+    - name: default
+      port: 8080
+      targetPort: 8080

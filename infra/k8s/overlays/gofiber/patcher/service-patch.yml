@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: BACKEND_CLUSTER_PLACEHOLDER
+  namespace: backend-space
+spec:
+  ports:
+    - name: updated
+      port: 9090
+      targetPort: 9090

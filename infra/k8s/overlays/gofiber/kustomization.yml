@@ -1,0 +1,94 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - "../../base/gofiber/"
+
+patches:
+  - path: ./patcher/service-patch.yml
+    target:
+      kind: Service
+      name: BACKEND_CLUSTER_PLACEHOLDER
+
+namespace: backend-space
+
+configMapGenerator:
+  - name: be-config
+    envs:
+      - .env
+  - name: be-env-file
+    files:
+      - .env
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+replacements:
+  # APP_NAME
+  - source:
+      kind: ConfigMap
+      name: be-config
+      fieldPath: data.APP_NAME
+    targets:
+      - select:
+          kind: Deployment
+          namespace: backend-space
+        fieldPaths:
+          - metadata.labels.app
+          - spec.selector.matchLabels.app
+          - spec.template.metadata.labels.app
+          - spec.template.spec.containers.[name=APP_NAME_PLACEHOLDER].name
+      - select:
+          kind: Service
+          namespace: backend-space
+        fieldPaths:
+          - metadata.labels.app
+          - spec.selector.app
+
+  # BACKEND_DEPLOYMENT
+  - source:
+      kind: ConfigMap
+      name: be-config
+      fieldPath: data.BACKEND_DEPLOYMENT
+    targets:
+      - select:
+          kind: Deployment
+          namespace: backend-space
+        fieldPaths:
+          - metadata.name
+
+  # BACKEND_PODS
+  - source:
+      kind: ConfigMap
+      name: be-config
+      fieldPath: data.BACKEND_PODS
+    targets:
+      - select:
+          kind: Deployment
+          namespace: backend-space
+        fieldPaths:
+          - spec.template.metadata.name
+
+  # BACKEND_CLUSTER
+  - source:
+      kind: ConfigMap
+      name: be-config
+      fieldPath: data.BACKEND_CLUSTER
+    targets:
+      - select:
+          kind: Service
+          namespace: backend-space
+        fieldPaths:
+          - metadata.name
+
+  # BACKEND_IMAGE
+  - source:
+      kind: ConfigMap
+      name: be-config
+      fieldPath: data.BACKEND_IMAGE
+    targets:
+      - select:
+          kind: Deployment
+          namespace: backend-space
+        fieldPaths:
+          - spec.template.spec.containers.0.image
