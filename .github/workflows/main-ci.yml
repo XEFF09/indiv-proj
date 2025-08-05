@@ -47,7 +47,7 @@ jobs:
   deploy:
     needs:
       - release
-    uses: xeff09/infra-template/.github/workflows/deploy.yml@main
+    uses: ./.github/workflows/deploy.yml
     with:
       deploy_cmd: ${{ github.event.inputs.deploy_cmd || 'kup' }}
     secrets:

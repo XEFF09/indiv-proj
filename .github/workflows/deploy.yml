@@ -1,0 +1,31 @@
+name: K8S Deploy
+on:
+  workflow_call:
+    secrets:
+      kubeconfig:
+        required: true
+    inputs:
+      deploy_cmd:
+        required: true
+        type: string
+        default: kup
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Kubeconfig
+        env:
+          KUBECONFIG_DATA: ${{ secrets.kubeconfig }}
+        run: |
+          mkdir -p ~/.kube
+          echo "$KUBECONFIG_DATA" > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y make
+
+      - name: Run selected make target
+        run: make ${{ github.event.inputs.deploy_cmd }}
