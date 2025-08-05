@@ -4,11 +4,11 @@ kind: Kustomization
 resources:
   - "../../base/gofiber/"
 
-patches:
-  - path: ./patcher/service-patch.yml
-    target:
-      kind: Service
-      name: BACKEND_CLUSTER_PLACEHOLDER
+# patches:
+#   - path: ../../patcher/backend-cluster.yml
+#     target:
+#       kind: Service
+#       name: BACKEND_CLUSTER_PLACEHOLDER
 
 namespace: backend-space
 

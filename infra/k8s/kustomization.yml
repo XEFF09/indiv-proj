@@ -1,6 +1,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+patches:
+  - path: ./patcher/backend-cluster.yml
+    target:
+      kind: Service
+      name: BACKEND_CLUSTER_PLACEHOLDER
+
 resources:
   - "./overlays/gofiber/"
   - "./overlays/postgres/"
