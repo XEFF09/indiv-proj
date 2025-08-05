@@ -8,6 +8,10 @@ on:
         description: "Version bump type (patch, minor, major)"
         required: false
         default: "patch"
+      deploy_cmd:
+        description: "Make target to run (kup, kdown, kdown-v)"
+        required: true
+        default: "kup"
 
 permissions:
   contents: write
@@ -39,3 +43,12 @@ jobs:
       new_tag: ${{ needs.generate_tag.outputs.new_tag }}
     secrets:
       gh_token: ${{ secrets.GH_PAT }}
+
+  deploy:
+    needs:
+      - release
+    uses: xeff09/infra-template/.github/workflows/deploy.yml@main
+    with:
+      deploy_cmd: ${{ github.event.inputs.deploy_cmd || 'kup' }}
+    secrets:
+      kubeconfig: ${{ secrets.KUBECONFIG }}
