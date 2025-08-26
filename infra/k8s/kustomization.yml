@@ -8,5 +8,5 @@ patches:
       name: BACKEND_CLUSTER_PLACEHOLDER
 
 resources:
-  - "./overlays/gofiber/"
-  - "./overlays/postgres/"
+  - "./go.k8s/overlays/gofiber/"
+  - "./postgres.k8s/overlays/postgres/"

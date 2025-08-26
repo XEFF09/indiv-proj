@@ -4,3 +4,9 @@
 [submodule "infra/snippets"]
 	path = infra/snippets
 	url = https://github.com/XEFF09/snippets.git
+[submodule "infra/k8s_test"]
+	path = infra/k8s_test
+	url = https://github.com/XEFF09/postgres.k8s.git
+[submodule "infra/k8s/postgres.k8s"]
+	path = infra/k8s/postgres.k8s
+	url = https://github.com/XEFF09/go.k8s.git
