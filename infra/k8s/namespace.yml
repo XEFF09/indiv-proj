@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: backend-space
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: database-space
