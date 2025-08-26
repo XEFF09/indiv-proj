@@ -1,3 +1,6 @@
 [submodule "infra/docker"]
 	path = infra/docker
 	url = https://github.com/XEFF09/go.docker.git
+[submodule "infra/snippets"]
+	path = infra/snippets
+	url = https://github.com/XEFF09/snippets.git
