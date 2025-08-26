@@ -1,0 +1,3 @@
+[submodule "infra/docker"]
+	path = infra/docker
+	url = https://github.com/XEFF09/go.docker.git
